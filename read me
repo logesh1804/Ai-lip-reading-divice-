@@ -1,0 +1,16 @@
+# AI-Based Lip Reading Communication Device
+
+This project uses computer vision and deep learning to convert lip movements into text and speech.
+
+Technologies:
+- OpenCV
+- Dlib facial landmarks
+- TensorFlow / Keras
+- Flask web interface
+- ESP32 hardware integration
+
+Pipeline:
+Camera → Lip detection → Frame preprocessing → 3D CNN model → Word prediction → Text to speech
+
+Applications:
+Assistive communication for non-verbal individuals.
