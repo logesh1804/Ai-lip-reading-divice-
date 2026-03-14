@@ -1,0 +1,17 @@
+Camera
+   ↓
+Face detection (Dlib)
+   ↓
+Lip region extraction
+   ↓
+Frame preprocessing
+   ↓
+22-frame sequence
+   ↓
+3D CNN model
+   ↓
+Word prediction
+   ↓
+Flask web dashboard
+   ↓
+ESP32 display + speech output
