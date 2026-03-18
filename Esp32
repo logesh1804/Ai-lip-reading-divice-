@@ -1,0 +1,76 @@
+#include <WiFi.h>
+#include <WebServer.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+WebServer server(80);
+
+String receivedWord = "Waiting...";
+
+// ---------------- HANDLER ----------------
+void handleDisplay() {
+  if (server.hasArg("word")) {
+    receivedWord = server.arg("word");
+    Serial.println("Received: " + receivedWord);
+
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setTextColor(WHITE);
+    display.setCursor(0, 20);
+    display.println(receivedWord);
+    display.display();
+  }
+
+  server.send(200, "text/plain", "OK");
+}
+
+// ---------------- SETUP ----------------
+void setup() {
+  Serial.begin(115200);
+
+  // OLED INIT
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println("OLED failed");
+    for (;;);
+  }
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println("Connecting...");
+  display.display();
+
+  // WIFI CONNECT
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nConnected!");
+  Serial.println(WiFi.localIP());
+
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("Connected!");
+  display.println(WiFi.localIP());
+  display.display();
+
+  // ROUTE
+  server.on("/display", handleDisplay);
+  server.begin();
+}
+
+// ---------------- LOOP ----------------
+void loop() {
+  server.handleClient();
+}
